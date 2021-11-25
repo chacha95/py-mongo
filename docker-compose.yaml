@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: "${DB_IMAGE_NAME}:${DB_IMAGE_VERSION}"
+    container_name: "${DB_IMAGE_NAME}_${DB_IMAGE_VERSION}"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - "MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USER}"
+      - "MONGO_INITDB_ROOT_PASSWORD=${DB_ROOT_PWD}"
+    ports:
+      - "${DB_PORT}:27017"
+    privileged: true
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_express
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - .env
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${DB_ROOT_USER}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${DB_ROOT_PWD}
+    privileged: true
